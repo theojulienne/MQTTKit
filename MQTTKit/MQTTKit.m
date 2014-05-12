@@ -224,6 +224,9 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
     // FIXME: check for errors
     mosquitto_username_pw_set(mosq, cstrUsername, cstrPassword);
     mosquitto_reconnect_delay_set(mosq, self.reconnectDelay, self.reconnectDelayMax, self.reconnectExponentialBackoff);
+    if (self.cafile && mosquitto_tls_set(mosq, [self.cafile cStringUsingEncoding:NSUTF8StringEncoding], NULL, NULL, NULL, NULL)) {
+        NSLog(@"error setting up TLS");
+    }
 
     mosquitto_connect(mosq, cstrHost, self.port, self.keepAlive);
     
