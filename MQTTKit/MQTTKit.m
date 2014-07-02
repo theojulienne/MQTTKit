@@ -243,7 +243,7 @@ static void on_log(struct mosquitto *mosq, void *obj, int level, char *str)
     }
     if (self.insecureTLS) {
         mosquitto_tls_insecure_set(mosq, true);
-        mosquitto_tls_opts_set(mosq, SSL_VERIFY_NONE, NULL, NULL);
+        mosquitto_tls_opts_set(mosq, 0, NULL, NULL);
     }
 
     mosquitto_connect(mosq, cstrHost, self.port, self.keepAlive);
