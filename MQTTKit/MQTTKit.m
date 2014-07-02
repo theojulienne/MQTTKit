@@ -154,6 +154,14 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
     }
 }
 
+static void on_log(struct mosquitto *mosq, void *obj, int level, char *str)
+{
+    MQTTClient* client = (__bridge MQTTClient*)obj;
+    if (client.logHandler != nil) {
+        client.logHandler(client, level, [NSString stringWithUTF8String:str]);
+    }
+}
+
 
 // Initialize is called just before the first object is allocated
 + (void)initialize {
@@ -176,6 +184,7 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
         self.reconnectDelayMax = 1;
         self.reconnectExponentialBackoff = NO;
         self.insecureTLS = NO;
+        self.logHandler = nil;
 
         self.subscriptionHandlers = [[NSMutableDictionary alloc] init];
         self.unsubscriptionHandlers = [[NSMutableDictionary alloc] init];
@@ -190,6 +199,7 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
         mosquitto_message_callback_set(mosq, on_message);
         mosquitto_subscribe_callback_set(mosq, on_subscribe);
         mosquitto_unsubscribe_callback_set(mosq, on_unsubscribe);
+        mosquitto_log_callback_set(mosq, on_log);
 
         queue = dispatch_queue_create(cstrClientId, NULL);
     }

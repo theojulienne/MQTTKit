@@ -43,6 +43,8 @@ typedef void (^MQTTDisconnectionHandler)(NSUInteger code);
 
 @class MQTTClient;
 
+typedef void (^MQTTKitLogHandler)(MQTTClient *, int, NSString *);
+
 @interface MQTTClient : NSObject {
     struct mosquitto *mosq;
 }
@@ -60,6 +62,7 @@ typedef void (^MQTTDisconnectionHandler)(NSUInteger code);
 @property (readwrite, assign) BOOL reconnectExponentialBackoff; // wheter to backoff exponentially the reconnect attempts (default is NO)
 @property (readwrite, assign) BOOL cleanSession;
 @property (readonly, assign) BOOL connected;
+@property (readwrite, assign) MQTTKitLogHandler logHandler;
 @property (nonatomic, copy) MQTTMessageHandler messageHandler;
 @property (nonatomic, copy) MQTTDisconnectionHandler disconnectionHandler;
 
