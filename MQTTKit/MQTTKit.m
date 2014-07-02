@@ -175,6 +175,7 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
         self.reconnectDelay = 1;
         self.reconnectDelayMax = 1;
         self.reconnectExponentialBackoff = NO;
+        self.insecure_tls = NO;
 
         self.subscriptionHandlers = [[NSMutableDictionary alloc] init];
         self.unsubscriptionHandlers = [[NSMutableDictionary alloc] init];
@@ -227,6 +228,7 @@ static void on_unsubscribe(struct mosquitto *mosq, void *obj, int message_id)
     if (self.cafile && mosquitto_tls_set(mosq, [self.cafile cStringUsingEncoding:NSUTF8StringEncoding], NULL, NULL, NULL, NULL)) {
         NSLog(@"error setting up TLS");
     }
+    mosquitto_tls_insecure_set(mosq, self.insecure_tls);
 
     mosquitto_connect(mosq, cstrHost, self.port, self.keepAlive);
     
